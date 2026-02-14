@@ -16,7 +16,9 @@ const app = express();
 // --------------------
 app.use(
   cors({
-    origin: "https://bellcorp-event-management-kappa.vercel.app",
+    origin: ["https://bellcorp-event-management-kappa.vercel.app"],
+    methods: ["GET", "POST", "DELETE"],
+    credentials: true,
   })
 );
 app.use(express.json());
