@@ -14,9 +14,11 @@ const app = express();
 // --------------------
 // Middleware
 // --------------------
-app.use(cors(
-   origin: "https://bellcorp-event-management-kappa.vercel.app/"
-));
+app.use(
+  cors({
+    origin: "https://bellcorp-event-management-kappa.vercel.app",
+  })
+);
 app.use(express.json());
 
 // --------------------
