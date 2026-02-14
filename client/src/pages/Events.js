@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import API from "../services/api";
 import EventCard from "../components/EventCard";
 import Loader from "../components/Loader";
@@ -12,18 +12,18 @@ const Events = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  const fetchEvents = async () => {
-    setLoading(true);
-    try {
-       const { data } = await API.get("/events", {
-        params: { search, category, location, page },
-      });
-      setEvents(data);
-    } catch (error) {
-      console.log("Error fetching events");
-    }
-    setLoading(false);
-  };
+  const fetchEvents = useCallback(async () => {
+  setLoading(true);
+  try {
+    const { data } = await API.get("/events", {
+      params: { search, category, location, page },
+    });
+    setEvents(data);
+  } catch (error) {
+    console.log("Error fetching events");
+  }
+  setLoading(false);
+}, [search, category, location, page]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
@@ -31,8 +31,8 @@ const Events = () => {
   }, [search, category, location]);
 
   useEffect(() => {
-    fetchEvents();
-  }, [search, category, location, page]);
+  fetchEvents();
+}, [fetchEvents]);
 
   return (
     <div className="container">
