@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import API from "../services/api";
 import { AuthContext } from "../context/AuthContext";
 import Loader from "../components/Loader";
@@ -8,7 +8,7 @@ const Dashboard = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchMyEvents = async () => {
+  const fetchMyEvents =  useCallback(async () => {
     try {
       const { data } = await API.get("/registrations/my-events", {
         headers: {
@@ -22,11 +22,11 @@ const Dashboard = () => {
       console.log("Error fetching user events");
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
-    fetchMyEvents();
-  }, []);
+  fetchMyEvents();
+}, [fetchMyEvents]);
 
   if (loading) return <Loader />;
 
