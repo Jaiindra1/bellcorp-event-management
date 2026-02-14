@@ -65,6 +65,31 @@ db.serialize(() => {
   console.log("Database tables ready.");
 });
 
+db.get("SELECT COUNT(*) as count FROM events", (err, row) => {
+  if (row.count === 0) {
+    console.log("Seeding initial events...");
+
+    const seedEvents = [
+      ["React Conference 2026", "Bellcorp Tech", "Hyderabad", "2026-05-10", "React developer conference", 100, "Tech"],
+      ["Startup Meetup", "Innovators Hub", "Bangalore", "2026-04-20", "Networking for founders", 50, "Business"],
+      ["AI Summit", "Future Labs", "Chennai", "2026-06-15", "AI discussions", 150, "Tech"],
+      ["Design Workshop", "Creative Minds", "Hyderabad", "2026-03-12", "UI/UX workshop", 80, "Design"],
+      ["Marketing Bootcamp", "Growth Labs", "Bangalore", "2026-07-22", "Marketing strategies", 60, "Business"]
+    ];
+
+    seedEvents.forEach(event => {
+      db.run(
+        `INSERT INTO events 
+        (name, organizer, location, date, description, capacity, category)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        event
+      );
+    });
+
+    console.log("Events seeded successfully.");
+  }
+});
+
 // --------------------
 // Basic Test Route
 // --------------------
