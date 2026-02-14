@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { AuthContext } from "../context/AuthContext";
@@ -13,38 +13,38 @@ const EventDetails = () => {
   const [loading, setLoading] = useState(true);
   const [isRegistered, setIsRegistered] = useState(false);
 
-  const fetchEvent = async () => {
-    try {
-      const { data } = await API.get(`/events/${id}`);
-      setEvent(data);
-      setLoading(false);
-    } catch (error) {
-      console.log("Error fetching event");
-      setLoading(false);
-    }
-  };
+  const fetchEvent = useCallback(async () => {
+  try {
+    const { data } = await API.get(`/events/${id}`);
+    setEvent(data);
+    setLoading(false);
+  } catch (error) {
+    console.log("Error fetching event");
+    setLoading(false);
+  }
+}, [id]);
 
-  const checkRegistration = async () => {
-    if (!user) return;
+  const checkRegistration = useCallback(async () => {
+  if (!user) return;
 
-    try {
-      const { data } = await API.get("/registrations/my-events", {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
+  try {
+    const { data } = await API.get("/registrations/my-events", {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
 
-      const registered = data.some((e) => e.id === Number(id));
-      setIsRegistered(registered);
-    } catch (error) {
-      console.log("Error checking registration");
-    }
-  };
+    const registered = data.some((e) => e.id === Number(id));
+    setIsRegistered(registered);
+  } catch (error) {
+    console.log("Error checking registration");
+  }
+}, [user, id]);
 
   useEffect(() => {
-    fetchEvent();
-    checkRegistration();
-  }, [id]);
+  fetchEvent();
+  checkRegistration();
+}, [fetchEvent, checkRegistration]);
 
   const handleRegister = async () => {
     if (!user) {
